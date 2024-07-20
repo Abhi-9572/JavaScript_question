@@ -11,7 +11,7 @@
  */
 
 /**THROTTLE
- * 1.Create a button with name Click here and add debounce as follows =>
+ * 2.Create a button with name Click here and add throttle as follows =>
  * -->show Button pressed <X>  times  every time button is presses
  * -->show Triggered <Y> times count after every 800ms of throttle
  */
@@ -28,6 +28,7 @@
 
 // Here’s how you can implement throttling in JavaScript:
 
+/** 
 const button = document.querySelector("._button");
 const buttonPressed = document.querySelector("._increment_count");
 const actualIncrement = document.querySelector("._increment_actual");
@@ -46,5 +47,65 @@ const throttleCount = _.throttle(() => {
 button.addEventListener("click", () => {
   buttonPressed.innerHTML = ++pressedCount;
   //   debounceCount();
+  throttleCount();
+});
+
+*/
+
+// 3.Create debounce polyfill
+
+/** 
+const button = document.querySelector("._button");
+const buttonPressed = document.querySelector("._increment_count");
+const actualIncrement = document.querySelector("._increment_actual");
+
+var pressedCount = 0;
+var triggeredCount = 0;
+
+const myDebounce = (cb, d) => {
+  let timer;
+  return () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      cb();
+    }, d);
+  };
+};
+
+const debounceCount = myDebounce(() => {
+  actualIncrement.innerHTML = ++triggeredCount;
+}, 800);
+
+button.addEventListener("click", () => {
+  buttonPressed.innerHTML = ++pressedCount;
+  debounceCount();
+});
+*/
+
+// 3.Create throttle polyfill
+
+const button = document.querySelector("._button");
+const buttonPressed = document.querySelector("._increment_count");
+const actualIncrement = document.querySelector("._increment_actual");
+
+var pressedCount = 0;
+var triggeredCount = 0;
+
+const myThrottle = (cb, d) => {
+  let lastExecutionTime = 0;
+  return () => {
+    const currentTime = Date.now();
+    if (currentTime - lastExecutionTime < d) return;
+    lastExecutionTime = currentTime;
+    cb();
+  };
+};
+
+const throttleCount = myThrottle(() => {
+  actualIncrement.innerHTML = ++triggeredCount;
+}, 800);
+
+button.addEventListener("click", () => {
+  buttonPressed.innerHTML = ++pressedCount;
   throttleCount();
 });
